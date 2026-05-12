@@ -40,34 +40,29 @@ export default function StudentDashboard() {
     }
   };
 
-  const captureDoubleSelfie = useCallback(async () => {
+  const captureNextSelfie = useCallback(() => {
     if (!webcamRef.current) return;
-    setCapturing(true);
     setMessage({ type: '', text: '' });
 
     try {
+      const img = webcamRef.current.getScreenshot();
       setFlash(true);
-      const img1 = webcamRef.current.getScreenshot();
-      setTimeout(() => setFlash(false), 300);
+      setTimeout(() => setFlash(false), 200);
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setFlash(true);
-      const img2 = webcamRef.current.getScreenshot();
-      setTimeout(() => setFlash(false), 300);
-
-      if (!img1 || !img2) {
-        throw new Error('فشل التقاط الصور');
+      if (!img) {
+        throw new Error('فشل التقاط الصورة، تأكد من إعطاء صلاحية الكاميرا');
       }
 
-      setCapturedImages({ img1, img2 });
-      setStep('preview');
+      if (!capturedImages.img1) {
+        setCapturedImages({ img1: img, img2: null });
+      } else {
+        setCapturedImages({ img1: capturedImages.img1, img2: img });
+        setStep('preview');
+      }
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
-    } finally {
-      setCapturing(false);
     }
-  }, []);
+  }, [capturedImages]);
 
   const submitAttendance = async () => {
     setUploading(true);
@@ -193,27 +188,25 @@ export default function StudentDashboard() {
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                     الكاميرا نشطة
                   </div>
+
+                  {/* Show Thumbnail of first image if taken */}
+                  {capturedImages.img1 && (
+                    <div className="absolute bottom-4 right-4 border-2 border-white rounded-lg shadow-lg overflow-hidden w-24 h-24 bg-black">
+                      <img src={capturedImages.img1} alt="First shot" className="w-full h-full object-cover" />
+                      <div className="absolute bottom-0 w-full bg-black/60 text-white text-[10px] text-center py-1 font-bold">اللقطة الأولى</div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <button
-                    onClick={captureDoubleSelfie}
-                    disabled={capturing}
-                    className="bg-navy-900 hover:bg-navy-800 disabled:bg-navy-400 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 w-full sm:w-auto"
+                    onClick={captureNextSelfie}
+                    className="bg-navy-900 hover:bg-navy-800 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 w-full sm:w-auto"
                   >
-                    {capturing ? (
-                      <>
-                        <div className="spinner !w-5 !h-5 !border-2"></div>
-                        جاري الالتقاط...
-                      </>
-                    ) : (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                        </svg>
-                        التقاط الصورة
-                      </>
-                    )}
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                    </svg>
+                    {!capturedImages.img1 ? 'التقاط الصورة الأولى' : 'التقاط الصورة الثانية'}
                   </button>
                   <button
                     onClick={() => { setCameraOpen(false); setStep('idle'); }}

@@ -179,8 +179,8 @@ export default function AdminDashboard() {
             <p className="text-gray-500">لم يتم العثور على أية بيانات تطابق بحثك الحالي.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-right border-collapse">
+          <div className="overflow-x-auto pb-4">
+            <table className="w-full text-right border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-[#f0f4f8] border-b-2 border-gray-200">
                   <th className="px-6 py-4 font-bold text-[#334e68] uppercase tracking-wider text-sm">الطالب</th>
@@ -193,12 +193,12 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-gray-100 bg-white">
                 {filteredLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-[#f8f9fa] transition-colors">
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-5 whitespace-nowrap">
                       <div className="font-bold text-[#102a43] text-base">
                         {log.profiles?.full_name || 'طالب غير معروف'}
                       </div>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-5 whitespace-nowrap">
                       <div className="text-gray-600 font-mono text-sm bg-gray-100 px-3 py-1 rounded-md inline-block border border-gray-200" dir="ltr">
                         {log.profiles?.email}
                       </div>
