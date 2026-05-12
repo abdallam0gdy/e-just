@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import AdminSignUp from './pages/AdminSignUp';
 import StudentDashboard from './pages/StudentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 
@@ -52,6 +53,7 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/admin-secret-register-9921" element={<AdminSignUp />} />
 
       {/* Protected Routes with Layout */}
       <Route element={
