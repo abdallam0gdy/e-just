@@ -123,7 +123,7 @@ export default function App() {
       {/* Root redirect based on role */}
       <Route path="/" element={<RoleRedirect />} />
 
-      {/* 404 - Redirect to home */}س
+      {/* 404 - Redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
