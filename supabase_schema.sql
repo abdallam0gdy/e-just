@@ -113,13 +113,27 @@ CREATE POLICY "Admins can delete any log"
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  requested_role TEXT;
 BEGIN
+  -- ✅ أمان: التحقق من البريد الجامعي على مستوى قاعدة البيانات
+  IF NEW.email NOT LIKE '%@ejust.edu.eg' THEN
+    RAISE EXCEPTION 'Registration is only allowed for @ejust.edu.eg emails';
+  END IF;
+
+  -- ✅ أمان: السماح فقط بـ student و doctor، أي قيمة تانية = student
+  -- إنشاء حساب أدمن يتم يدوياً من Supabase Dashboard
+  requested_role := COALESCE(NEW.raw_user_meta_data->>'role', 'student');
+  IF requested_role NOT IN ('student', 'doctor') THEN
+    requested_role := 'student';
+  END IF;
+
   INSERT INTO public.profiles (id, email, full_name, role)
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'student')
+    requested_role
   );
   RETURN NEW;
 END;

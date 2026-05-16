@@ -4,6 +4,20 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { uploadDoubleSelfie } from '../lib/imgbbUpload';
 
+// Timezone helpers: always use Cairo time regardless of browser timezone
+const getCairoTimeHHMM = (date) =>
+  date.toLocaleTimeString('en-GB', { timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hour12: false });
+
+// 12-hour display helper
+const formatTime12h = (time24) => {
+  if (!time24) return '';
+  const [hStr, mStr] = time24.split(':');
+  const h = parseInt(hStr);
+  const period = h >= 12 ? 'م' : 'ص';
+  const hour = h % 12 || 12;
+  return `${hour}:${mStr?.slice(0, 2) || '00'} ${period}`;
+};
+
 export default function StudentDashboard() {
   const { user, profile } = useAuth();
   const webcamRef = useRef(null);
@@ -47,9 +61,9 @@ export default function StudentDashboard() {
 
   const getLectureStatus = (lec) => {
     if (!serverNow) return 'unknown';
-    const nowTime = serverNow.toTimeString().slice(0, 5);
-    if (nowTime < lec.start_time) return 'upcoming';
-    if (nowTime > lec.end_time) return 'ended';
+    const nowTime = getCairoTimeHHMM(serverNow);
+    if (nowTime < lec.start_time?.slice(0, 5)) return 'upcoming';
+    if (nowTime > lec.end_time?.slice(0, 5)) return 'ended';
     return 'active';
   };
 
@@ -177,7 +191,7 @@ export default function StudentDashboard() {
                                   <span className="text-[9px] font-bold bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full shrink-0">انتهت</span>
                                 )}
                               </div>
-                              <p className="text-[10px] text-navy-400 font-bold" dir="ltr">🕐 {lec.start_time?.slice(0,5)} - {lec.end_time?.slice(0,5)}</p>
+                              <p className="text-[10px] text-navy-400 font-bold">🕐 {formatTime12h(lec.start_time)} - {formatTime12h(lec.end_time)}</p>
                               {lec.description && <p className="text-[10px] text-navy-400 mt-0.5">{lec.description}</p>}
                             </div>
                             {canAttend ? (

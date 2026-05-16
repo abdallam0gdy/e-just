@@ -4,6 +4,65 @@ import { useAuth } from '../contexts/AuthContext';
 
 const DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
+// Timezone helpers: always use Cairo time regardless of browser timezone
+const getCairoTimeHHMM = (date) =>
+  date.toLocaleTimeString('en-GB', { timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hour12: false });
+const getCairoDateISO = (date) =>
+  date.toLocaleDateString('en-CA', { timeZone: 'Africa/Cairo' }); // returns YYYY-MM-DD
+
+// 12-hour time helpers
+const to12hParts = (time24) => {
+  if (!time24) return { hour: '9', minute: '00', period: 'AM' };
+  const [hStr, mStr] = time24.split(':');
+  const h = parseInt(hStr);
+  return { hour: String(h % 12 || 12), minute: (mStr || '00').slice(0, 2), period: h >= 12 ? 'PM' : 'AM' };
+};
+const from12hTo24h = (hour, minute, period) => {
+  let h = parseInt(hour);
+  if (period === 'PM' && h !== 12) h += 12;
+  if (period === 'AM' && h === 12) h = 0;
+  return `${h.toString().padStart(2, '0')}:${minute}`;
+};
+const formatTime12h = (time24) => {
+  if (!time24) return '';
+  const { hour, minute, period } = to12hParts(time24);
+  return `${hour}:${minute} ${period === 'AM' ? 'ص' : 'م'}`;
+};
+
+const HOURS = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const MINUTES = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+
+/** 12-hour Time Picker Component */
+function TimePicker12h({ value, onChange, label }) {
+  const parts = to12hParts(value);
+  const update = (field, val) => {
+    const p = { ...parts, [field]: val };
+    onChange(from12hTo24h(p.hour, p.minute, p.period));
+  };
+  return (
+    <div>
+      <label className="block text-[11px] font-bold text-navy-700 mb-1">{label}</label>
+      <div className="flex items-center gap-1.5" dir="ltr">
+        <select value={parts.hour} onChange={e => update('hour', e.target.value)}
+          className="px-2 py-2 rounded-lg border border-gray-200 focus:border-navy-600 outline-none text-sm bg-white font-bold text-center appearance-none cursor-pointer">
+          {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
+        </select>
+        <span className="text-navy-400 font-bold text-lg">:</span>
+        <select value={parts.minute} onChange={e => update('minute', e.target.value)}
+          className="px-2 py-2 rounded-lg border border-gray-200 focus:border-navy-600 outline-none text-sm bg-white font-bold text-center appearance-none cursor-pointer">
+          {MINUTES.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+        <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+          <button type="button" onClick={() => update('period', 'AM')}
+            className={`px-2.5 py-2 text-[11px] font-bold transition-colors ${parts.period === 'AM' ? 'bg-navy-900 text-white' : 'bg-white text-navy-500 hover:bg-navy-50'}`}>AM</button>
+          <button type="button" onClick={() => update('period', 'PM')}
+            className={`px-2.5 py-2 text-[11px] font-bold transition-colors border-r border-gray-200 ${parts.period === 'PM' ? 'bg-navy-900 text-white' : 'bg-white text-navy-500 hover:bg-navy-50'}`}>PM</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LectureManager() {
   const { user } = useAuth();
   const [lectures, setLectures] = useState([]);
@@ -99,14 +158,13 @@ export default function LectureManager() {
   const getStatus = (lec) => {
     if (!lec.is_active) return { label: 'معطّلة', cls: 'bg-gray-100 text-gray-500' };
     if (!serverNow) return { label: '...', cls: 'bg-gray-100 text-gray-400' };
-    const now = serverNow;
     const lecDate = lec.lecture_date;
-    const today = now.toISOString().split('T')[0];
+    const today = getCairoDateISO(serverNow);
     if (lecDate > today) return { label: 'قادمة', cls: 'bg-blue-50 text-blue-700' };
     if (lecDate < today) return { label: 'انتهت', cls: 'bg-gray-100 text-gray-500' };
-    const nowTime = now.toTimeString().slice(0, 5);
-    if (nowTime >= lec.start_time && nowTime <= lec.end_time) return { label: 'نشطة الآن', cls: 'bg-green-50 text-green-700 animate-pulse' };
-    if (nowTime < lec.start_time) return { label: 'قادمة اليوم', cls: 'bg-blue-50 text-blue-600' };
+    const nowTime = getCairoTimeHHMM(serverNow);
+    if (nowTime >= lec.start_time?.slice(0, 5) && nowTime <= lec.end_time?.slice(0, 5)) return { label: 'نشطة الآن', cls: 'bg-green-50 text-green-700 animate-pulse' };
+    if (nowTime < lec.start_time?.slice(0, 5)) return { label: 'قادمة اليوم', cls: 'bg-blue-50 text-blue-600' };
     return { label: 'انتهت', cls: 'bg-gray-100 text-gray-500' };
   };
 
@@ -143,14 +201,12 @@ export default function LectureManager() {
               <label className="block text-[11px] font-bold text-navy-700 mb-1">التاريخ *</label>
               <input type="date" className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-navy-600 outline-none text-sm" value={form.lecture_date} onChange={e => setForm({ ...form, lecture_date: e.target.value })} required dir="ltr" />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block text-[11px] font-bold text-navy-700 mb-1">من *</label>
-                <input type="time" className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-navy-600 outline-none text-sm" value={form.start_time} onChange={e => setForm({ ...form, start_time: e.target.value })} required dir="ltr" />
+                <TimePicker12h label="من *" value={form.start_time} onChange={v => setForm({ ...form, start_time: v })} />
               </div>
               <div className="flex-1">
-                <label className="block text-[11px] font-bold text-navy-700 mb-1">إلى *</label>
-                <input type="time" className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-navy-600 outline-none text-sm" value={form.end_time} onChange={e => setForm({ ...form, end_time: e.target.value })} required dir="ltr" />
+                <TimePicker12h label="إلى *" value={form.end_time} onChange={v => setForm({ ...form, end_time: v })} />
               </div>
             </div>
           </div>
@@ -197,7 +253,7 @@ export default function LectureManager() {
                       {lec.is_recurring && <span className="text-[9px] bg-purple-50 text-purple-600 font-bold px-1.5 py-0.5 rounded mt-0.5 inline-block">🔁 أسبوعي</span>}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-navy-700 font-bold whitespace-nowrap" dir="ltr">{lec.lecture_date}</td>
-                    <td className="px-3 py-2.5 text-xs text-navy-600 whitespace-nowrap" dir="ltr">{lec.start_time?.slice(0,5)} - {lec.end_time?.slice(0,5)}</td>
+                    <td className="px-3 py-2.5 text-xs text-navy-600 whitespace-nowrap">{formatTime12h(lec.start_time)} - {formatTime12h(lec.end_time)}</td>
                     <td className="px-3 py-2.5 text-center"><span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${status.cls}`}>{status.label}</span></td>
                     <td className="px-3 py-2.5 text-center">
                       <div className="flex justify-center gap-1">

@@ -71,12 +71,13 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- =============================================
--- دالة لجلب وقت السيرفر (توقيت مصر)
+-- دالة لجلب وقت السيرفر (UTC-aware timestamp)
+-- ملاحظة: تحويل التوقيت لمصر يتم في الفرونت اند
 -- =============================================
 CREATE OR REPLACE FUNCTION public.get_server_time()
 RETURNS TIMESTAMPTZ AS $$
 BEGIN
-  RETURN now() AT TIME ZONE 'Africa/Cairo';
+  RETURN now();
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
