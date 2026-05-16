@@ -23,10 +23,17 @@ export default function PublicHeader({ subtitle = '', accent = 'navy' }) {
             {/* Language Toggle */}
             <button
               onClick={toggleLang}
-              className="bg-navy-50 hover:bg-navy-100 text-navy-800 border border-navy-200 py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-md text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center gap-1"
               title={lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
+              className="relative flex items-center bg-white border border-navy-200 shadow-sm hover:shadow-md rounded-full py-1 px-1 sm:py-1 sm:px-1.5 transition-all duration-300"
             >
-              🌐 {lang === 'ar' ? 'EN' : 'عربي'}
+              <span className={`relative flex items-center w-12 sm:w-14 h-5 sm:h-6 rounded-full transition-colors duration-300 ${lang === 'ar' ? 'bg-navy-900' : 'bg-gold-500'}`}>
+                <span className={`absolute top-0.5 w-4 h-4 sm:w-5 sm:h-5 bg-white rounded-full shadow-md transition-all duration-300 flex items-center justify-center text-[8px] font-black ${lang === 'ar' ? 'right-0.5 text-navy-900' : 'left-0.5 text-gold-600'}`}>
+                  {lang === 'ar' ? 'ع' : 'E'}
+                </span>
+                <span className={`absolute text-[8px] sm:text-[9px] font-black text-white transition-all duration-300 ${lang === 'ar' ? 'left-1.5' : 'right-1'}`}>
+                  {lang === 'ar' ? 'EN' : 'عر'}
+                </span>
+              </span>
             </button>
             <div className={`hidden sm:block text-left border-l-3 ${accentBorder} pl-3`}>
               <h1 className={`text-sm font-bold ${accentTitle}`}>{t('system.name')}</h1>
