@@ -21,40 +21,40 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b-2 border-navy-100 shadow-sm sticky top-0 z-50 w-full" dir="rtl">
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 w-full">
-        <div className="flex justify-between items-center py-3 sm:py-4">
+    <header className="bg-white border-b border-navy-100 shadow-sm sticky top-0 z-50 w-full" dir="rtl">
+      <div className="max-w-6xl mx-auto px-3 sm:px-5 lg:px-8 w-full">
+        <div className="flex justify-between items-center py-2 sm:py-3">
           {/* Logo and University Name */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             <img 
               src="/logo.png" 
               alt="E-JUST Logo" 
-              className="h-10 sm:h-14 object-contain"
+              className="h-8 sm:h-11 object-contain"
             />
-            <div className="hidden sm:block border-r-2 border-navy-200 pr-4">
-              <h1 className="text-base sm:text-lg font-bold text-navy-900 leading-tight">الجامعة المصرية اليابانية</h1>
-              <h2 className="text-xs sm:text-sm font-semibold text-navy-500">للعلوم والتكنولوجيا</h2>
+            <div className="hidden sm:block border-r border-navy-200 pr-3">
+              <h1 className="text-sm sm:text-base font-bold text-navy-900 leading-tight">الجامعة المصرية اليابانية</h1>
+              <h2 className="text-[10px] sm:text-xs font-semibold text-navy-500">للعلوم والتكنولوجيا</h2>
             </div>
           </div>
 
           {/* User Info & Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2">
             {user && profile && (
               <>
                 <div className="hidden md:flex flex-col items-end">
-                  <p className="text-sm font-bold text-navy-900">{profile.full_name}</p>
-                  <p className="text-xs text-navy-400 font-medium" dir="ltr">{user.email}</p>
+                  <p className="text-xs font-bold text-navy-900">{profile.full_name}</p>
+                  <p className="text-[10px] text-navy-400" dir="ltr">{user.email}</p>
                 </div>
                 
-                <span className="bg-navy-900 text-white px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold hidden sm:inline-flex">
+                <span className="bg-navy-900 text-white px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[11px] font-bold hidden sm:inline-flex">
                   {roleLabels[profile.role] || 'مستخدم'}
                 </span>
 
                 <button
                   onClick={handleSignOut}
-                  className="bg-navy-50 text-navy-800 border border-navy-200 hover:bg-navy-900 hover:text-white hover:border-navy-900 py-1.5 px-4 sm:py-2 sm:px-5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap"
+                  className="bg-navy-50 text-navy-800 border border-navy-200 hover:bg-navy-900 hover:text-white hover:border-navy-900 py-1 px-3 sm:py-1.5 sm:px-4 rounded-md text-[11px] sm:text-xs font-bold transition-all duration-200 whitespace-nowrap"
                 >
-                  تسجيل الخروج
+                  خروج
                 </button>
               </>
             )}
