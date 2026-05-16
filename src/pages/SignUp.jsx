@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import PublicHeader from '../components/PublicHeader';
+import Footer from '../components/Footer';
 
 const roles = [
   { value: 'student', label: 'طالب' },
@@ -60,26 +62,7 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-right">
-      {/* Formal Header */}
-      <header className="bg-white border-b border-gray-200 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img 
-              src="/logo.png" 
-              alt="E-JUST Logo" 
-              className="h-14 sm:h-16 object-contain"
-            />
-            <div className="border-r-2 border-gray-300 pr-4">
-              <h1 className="text-xl sm:text-2xl font-bold text-navy-900 leading-tight">الجامعة المصرية اليابانية</h1>
-              <h2 className="text-sm sm:text-base font-semibold text-navy-600">للعلوم والتكنولوجيا</h2>
-            </div>
-          </div>
-          <div className="hidden sm:block text-left border-l-4 border-gold-500 pl-4">
-            <h1 className="text-lg font-bold text-navy-800">نظام EduAttend</h1>
-            <p className="text-xs text-gray-500">إنشاء حساب جديد</p>
-          </div>
-        </div>
-      </header>
+      <PublicHeader subtitle="إنشاء حساب جديد" />
 
       {/* SignUp Content */}
       <div className="flex-1 flex items-center justify-center p-4">
@@ -202,6 +185,8 @@ export default function SignUp() {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

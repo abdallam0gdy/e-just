@@ -21,7 +21,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 w-full" dir="rtl">
+    <header className="bg-white border-b-2 border-navy-100 shadow-sm sticky top-0 z-50 w-full" dir="rtl">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 w-full">
         <div className="flex justify-between items-center py-3 sm:py-4">
           {/* Logo and University Name */}
@@ -29,30 +29,30 @@ export default function Header() {
             <img 
               src="/logo.png" 
               alt="E-JUST Logo" 
-              className="h-12 sm:h-16 object-contain"
+              className="h-10 sm:h-14 object-contain"
             />
-            <div className="hidden sm:block border-r-2 border-gray-300 pr-4">
-              <h1 className="text-lg sm:text-xl font-bold text-[#102a43] leading-tight">الجامعة المصرية اليابانية</h1>
-              <h2 className="text-xs sm:text-sm font-semibold text-[#486581]">للعلوم والتكنولوجيا</h2>
+            <div className="hidden sm:block border-r-2 border-navy-200 pr-4">
+              <h1 className="text-base sm:text-lg font-bold text-navy-900 leading-tight">الجامعة المصرية اليابانية</h1>
+              <h2 className="text-xs sm:text-sm font-semibold text-navy-500">للعلوم والتكنولوجيا</h2>
             </div>
           </div>
 
           {/* User Info & Actions */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             {user && profile && (
               <>
-                <div className="hidden md:block text-left" dir="ltr">
-                  <p className="text-sm font-bold text-[#102a43] text-right">{profile.full_name}</p>
-                  <p className="text-xs text-gray-500 text-right">{user.email}</p>
+                <div className="hidden md:flex flex-col items-end">
+                  <p className="text-sm font-bold text-navy-900">{profile.full_name}</p>
+                  <p className="text-xs text-navy-400 font-medium" dir="ltr">{user.email}</p>
                 </div>
                 
-                <span className="bg-[#102a43] text-white px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold hidden sm:inline-flex">
+                <span className="bg-navy-900 text-white px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold hidden sm:inline-flex">
                   {roleLabels[profile.role] || 'مستخدم'}
                 </span>
 
                 <button
                   onClick={handleSignOut}
-                  className="bg-white text-[#102a43] border-2 border-[#e2e8f0] hover:border-[#102a43] hover:bg-[#f0f4f8] py-1.5 px-4 sm:py-2 sm:px-6 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap"
+                  className="bg-navy-50 text-navy-800 border border-navy-200 hover:bg-navy-900 hover:text-white hover:border-navy-900 py-1.5 px-4 sm:py-2 sm:px-5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap"
                 >
                   تسجيل الخروج
                 </button>

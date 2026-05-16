@@ -56,12 +56,6 @@
    Base Styles
    ============================================= */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -70,7 +64,15 @@ body {
   font-family: 'Cairo', 'Inter', system-ui, sans-serif;
   background-color: #f8f9fa;
   color: #1a1a2e;
-  line-height: 1.6;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent horizontal overflow on the root */
+#root {
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 /* =============================================
@@ -365,6 +367,23 @@ body {
 .badge-gold {
   background: #fef3cd;
   color: #856404;
+}
+
+/* =============================================
+   Custom Scrollbar for containers
+   ============================================= */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #bcccdc;
+  border-radius: 2px;
 }
 
 /* =============================================
