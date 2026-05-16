@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 /**
  * PrivateRoute - Protects routes by authentication and optionally by role
@@ -9,13 +10,14 @@ import { useAuth } from '../contexts/AuthContext';
  */
 export default function PrivateRoute({ children, allowedRoles }) {
   const { user, profile, loading } = useAuth();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-navy-50">
         <div className="text-center">
           <div className="spinner mx-auto mb-3"></div>
-          <p className="text-navy-400 text-xs">جاري التحميل...</p>
+          <p className="text-navy-400 text-xs">{t('loading')}</p>
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
+import { useLanguage } from './contexts/LanguageContext';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
@@ -10,13 +11,14 @@ import AdminDashboard from './pages/AdminDashboard';
 
 function RoleRedirect() {
   const { user, profile, loading, profileError, retryProfile, signOut } = useAuth();
+  const { t, dir } = useLanguage();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-navy-50" dir="rtl">
+      <div className="min-h-screen flex items-center justify-center bg-navy-50" dir={dir}>
         <div className="text-center">
           <div className="spinner mx-auto mb-3"></div>
-          <p className="text-navy-400 text-sm">جاري التحميل...</p>
+          <p className="text-navy-400 text-sm">{t('loading')}</p>
         </div>
       </div>
     );
@@ -27,7 +29,7 @@ function RoleRedirect() {
   // Profile failed to load - show error with retry/logout options
   if (user && !profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-navy-50 p-4" dir="rtl">
+      <div className="min-h-screen flex items-center justify-center bg-navy-50 p-4" dir={dir}>
         <div className="text-center max-w-sm bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           {profileError ? (
             <>
@@ -36,27 +38,27 @@ function RoleRedirect() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-bold text-navy-900 mb-2">فشل تحميل البيانات</h3>
-              <p className="text-navy-400 text-xs mb-5">تعذر تحميل بيانات حسابك. تأكد من اتصالك بالإنترنت.</p>
+              <h3 className="text-lg font-bold text-navy-900 mb-2">{t('auth.profileLoadFailed')}</h3>
+              <p className="text-navy-400 text-xs mb-5">{t('auth.profileLoadFailedDesc')}</p>
               <div className="flex gap-2 justify-center">
                 <button
                   onClick={retryProfile}
                   className="bg-navy-900 hover:bg-navy-800 text-white font-bold py-2 px-5 rounded-lg text-xs transition-colors"
                 >
-                  إعادة المحاولة
+                  {t('retry')}
                 </button>
                 <button
                   onClick={signOut}
                   className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-5 rounded-lg text-xs transition-colors"
                 >
-                  تسجيل الخروج
+                  {t('signOut')}
                 </button>
               </div>
             </>
           ) : (
             <>
               <div className="spinner mx-auto mb-3"></div>
-              <p className="text-navy-500 text-sm font-bold">جاري تحميل بيانات الحساب...</p>
+              <p className="text-navy-500 text-sm font-bold">{t('auth.loadingProfile')}</p>
             </>
           )}
         </div>
